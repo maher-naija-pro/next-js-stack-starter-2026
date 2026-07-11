@@ -4,7 +4,11 @@ An opinionated, production-proven stack. Each pick is a current default rather t
 
 > **Latest versions verified July 2026** via web search. See the **Latest version** column below.
 
-## Recommended Stack
+This doc is split in two:
+- **Mandatory Core Stack** — everything needed to actually build, test, and ship any app on this stack, regardless of features.
+- **Optional Additions** — everything else, grouped by category. Add only what a given feature actually needs.
+
+## Mandatory Core Stack
 
 | Layer | Pick | Latest version | Why |
 |---|---|---|---|
@@ -13,10 +17,8 @@ An opinionated, production-proven stack. Each pick is a current default rather t
 | **Styling** | Tailwind CSS v4 | **4.3.2** (Jun 2026) | Faster engine, CSS-first config. |
 | **UI components** | shadcn/ui | **4.13.0** (Jul 2026) | Copy-in components you own (Radix + Tailwind), not a locked dependency. |
 | **Database** | PostgreSQL | **18.4** (May 2026) | The safe default. Self-host via the Docker Compose setup below (no SaaS needed) — Neon/Supabase are *optional* SaaS hosts if you'd rather not run it yourself. **UUIDv7 is native in Postgres 18** — use it for time-sortable, index-friendly primary keys. |
-| **Type-safe IDs** | UUIDv7 (native in Postgres 18) | native | Already available in your Postgres version — time-sortable primary keys with no extra dependency. |
 | **ORM** | Prisma ORM | **7.8.0** (Apr 2026) | Best-in-class type safety and DX, schema-first migrations, biggest ecosystem. The v7 rewrite dropped the Rust engine (bundle 14MB → 1.6MB, cold starts ~90ms). Drizzle **0.45.2** (Mar 2026) is the SQL-first, edge-light alternative. |
 | **Auth** | Better Auth | **1.6.23** (Jun 2026) | Self-hosted, no SaaS. TS-first library running in-app against your own Postgres via the Prisma adapter — MIT, fully free, no feature paywalls. Built-in 2FA, passkeys/WebAuthn, org/RBAC, rate-limiting & CSRF. Vercel-backed since 2026 (Auth.js/NextAuth is now maintenance-only). Keycloak is the heavyweight self-hosted alternative if you need enterprise SSO/LDAP federation. |
-
 | **Data/state** | TanStack Query (client) + Server Actions | **5.101.2** (Jun 2026) | Server Actions for mutations, Query for client-side caching. |
 | **Client state** | Zustand (global) + nuqs (URL) + @xstate/store (flows) | Zustand **5.0.14** (May 2026) · nuqs **2.9.0** (Jun 2026) · @xstate/store **4.2.1** (Jun 2026) | Match the tool to the kind of state: **Zustand** for global client state (~1KB, no provider, RSC-friendly store factory); **nuqs** for type-safe URL state (filters/tabs/pagination, first-class App Router + RSC); **@xstate/store** for multi-step wizards/checkout (event-driven, <1KB) — escalate to full **XState v5** when a flow needs guards, parallel states, or actors. |
 | **Validation** | Zod | **4.4.3** (May 2026) | Schema validation shared between client, server, and forms. |
@@ -26,15 +28,24 @@ An opinionated, production-proven stack. Each pick is a current default rather t
 | **Test data** | @faker-js/faker + Prisma seed | **10.5.0** (2026) | Type-safe, reproducible seed/fixture data for dev and tests. |
 | **Linting/format** | Biome | **2.5.3** (Jul 2026) | One fast Rust tool replacing ESLint + Prettier: single `biome.json`, ~25–56× faster, zero-dependency (smaller supply-chain surface). ESLint **10.6.0** + Prettier **3.9.5** is the alternative if you need `eslint-config-next`'s fuller `jsx-a11y`/React-Hooks rule coverage. |
 | **Containerization** | Docker + Docker Compose | Docker Engine **29.6.1** (Jun 2026) · Compose **v2** plugin (`docker compose`) | Reproducible local dev and self-hosting. Pair with Next.js `output: 'standalone'` for a lean multi-stage image. Compose orchestrates app + Postgres locally. |
-| **Monorepo / package manager** | Turborepo + pnpm | Turborepo **2.10.4** (Jul 2026) · pnpm **11.11.0** (Jul 2026) | pnpm for fast, disk-efficient installs with a strict node_modules; Turborepo for cached, parallel task running across apps/packages. Both MIT, free. Scales the starter from one app to a monorepo (web + api + shared packages) without re-tooling. |
+
+## Optional Additions
+
+Add tools from here only when a specific feature or production requirement calls for them.
+
+### Dev & Ops Tooling
+
+| Category | Pick | Version | Why |
+|---|---|---|---|
+| **Monorepo / package manager** | Turborepo + pnpm | Turborepo **2.10.4** (Jul 2026) · pnpm **11.11.0** (Jul 2026) | pnpm for fast, disk-efficient installs with a strict node_modules; Turborepo for cached, parallel task running across apps/packages. Both MIT, free. Needed once you scale from one app to a monorepo (web + api + shared packages). |
 | **Documentation** | Fumadocs | **16.11.1** (Jul 2026) | Next.js App Router-native docs framework (MDX, search, generated nav). MIT, free. Runs inside the same app/monorepo for product or API docs. |
 | **Dependency updates** | `npm-check-updates` on a scheduled CI job | ncu **~22.x** | Apache-2.0, CLI only — run as a cron job in your existing CI, opening PRs via your git host's CLI. No daemon, no extra service, no SaaS coupling. |
 | **Secrets management** | SOPS + age | SOPS **3.13.2** (Jul 2026) · age **1.3.1** (2025) | Encrypt secrets (`.env`/YAML/JSON) at rest **in the git repo**, decrypt at deploy with an `age` key. **No extra service, no vault to run** — SOPS (CNCF, MPL-2.0, permissive weak-copyleft) + age (BSD) are just CLIs. |
-| **DB backups** | pgBackRest | **2.58.0** (2025) | CLI, not a service. Non-negotiable for a SaaS holding customer data. |
+| **DB backups** | pgBackRest | **2.58.0** (2025) | CLI, not a service. Non-negotiable once you're in production holding customer data. |
 | **Git hooks** | lefthook | **2.1.10** (Jul 2026) | Runs Biome/typecheck pre-commit, faster than husky. |
 | **Versioning** | Changesets | **2.31.0** (Apr 2026) | Monorepo-aware release notes, pairs with Turborepo. |
 
-## Platform Services
+### Platform Services
 
 | Category | Pick | Version | Why |
 |---|---|---|---|
@@ -57,7 +68,7 @@ An opinionated, production-proven stack. Each pick is a current default rather t
 | **Authorization / RBAC** | Better Auth org/admin plugins + CASL | @casl/ability **7.0.1** (Jul 2026) | Fine-grained `can(user, action, resource)` checks shared client + server. |
 | **Feature flags** | DB table + Vercel flags SDK | `flags` **4.2.0** (Jun 2026) | Flags live in your own Postgres. |
 
-## UI & App Libraries
+### UI & App Libraries
 
 | Category | Pick | Version | Why |
 |---|---|---|---|
