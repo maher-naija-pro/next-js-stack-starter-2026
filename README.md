@@ -1,5 +1,7 @@
 # next-js-stack-starter-2026
 
+![Mandatory Core Stack — Next.js, React, TypeScript, Tailwind, shadcn/ui, PostgreSQL, Prisma, Better Auth, TanStack Query, Zustand, nuqs, XState Store, Zod, React Hook Form, Vitest, Playwright, MSW, Faker, Biome, Docker](./docs/stack.png)
+
 A ready-to-build Next.js starter, not just a boilerplate: the core tools you need for a real app — framework, database, auth, forms, testing, Docker — come pre-installed and already wired together, so you can start on features immediately instead of gluing tools together first.
 
 Every tool was deliberately chosen, not just defaulted to — see [STACK.md](./STACK.md) for the full list and the reasoning behind each pick.
@@ -8,6 +10,14 @@ Every tool was deliberately chosen, not just defaulted to — see [STACK.md](./S
 
 - ✅ **Mandatory Core Stack** — installed and working right now (see `pnpm dev` below).
 - ➕ **Optional Additions** — payments, email, search, AI, charts, and 30+ more, documented in STACK.md but *not* installed. Add only what your project actually needs, on demand — see [Adding optional components](#adding-optional-components).
+
+## AI-optimized
+
+This starter is built to be built *with* AI — and to ship AI features:
+
+- **Agent-friendly codebase.** Strict TypeScript, Zod schemas, and generated Prisma types give AI coding agents (like Claude Code) a tight, type-checked feedback loop. Biome lints in milliseconds and conventions stay consistent, so generated code fits the existing patterns instead of fighting them.
+- **Extensible by asking.** The `add-stack-component` Claude Code skill installs and wires optional pieces on demand, following the repo's own conventions — see [Adding optional components](#adding-optional-components).
+- **AI features are first-class.** The **Vercel AI SDK** (streaming, tool calls, structured output) and **pgvector** for embeddings + hybrid RAG search are in the Optional Additions — build chat, semantic search, and agents on the Postgres you already run. ⚠️ AI features always need a model provider: a hosted API (Anthropic/OpenAI, billed per token) or a self-hosted Ollama.
 
 ## Getting started
 

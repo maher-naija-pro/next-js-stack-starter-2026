@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('home page loads and the counter works', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('heading', { name: 'Next.js Stack Starter 2026' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /stack that ships/i })).toBeVisible();
 
   await expect(page.getByTestId('count')).toHaveText('0');
   await page.getByLabel('Increment').click();
