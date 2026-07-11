@@ -39,7 +39,27 @@ docker compose up -d
 
 ## Adding optional components
 
-Ask Claude Code to install and wire up anything from STACK.md's **Optional Additions** section — Dev & Ops Tooling, Platform Services, or UI & App Libraries — using the `add-stack-component` skill (see `.claude/skills/`). It will ask which components you want, install them, and integrate the minimal working code.
+Everything in STACK.md's **Optional Additions** — Dev & Ops Tooling, Platform Services, UI & App Libraries — is added on demand via the `add-stack-component` Claude Code skill (`.claude/skills/add-stack-component/`), not pre-installed.
+
+**Usage:** in Claude Code, just ask — e.g.:
+
+```
+Add Stripe and Recharts to this project
+```
+```
+/add-stack-component
+```
+
+If you don't name specific components, it asks which category and which items interest you, then for each one:
+
+1. Checks whether it's already installed (skips cleanly if so)
+2. Installs the package(s) via `pnpm`, versioned to match STACK.md
+3. Wires up minimal working integration code following this project's existing conventions — reusing `src/lib/prisma.ts` and `src/lib/auth.ts` rather than creating parallel clients, respecting the "zero-dependency default → heavier upgrade" pattern (e.g. it won't add a Redis-backed error tracker when the Postgres-only default covers it, unless you ask for the upgrade)
+4. Flags before adding any **new Docker service** to `docker-compose.yml` — some optional components (GlitchTip, Umami, SeaweedFS) need one; most don't
+5. Runs `pnpm lint`, a typecheck, and `pnpm build` to confirm nothing broke
+6. Reports what was installed, what files changed, and any env vars you need to fill in with real values
+
+The skill never substitutes a different tool than what STACK.md specifies — if it thinks something better exists now, it'll ask rather than silently swap it in. Per-component install/integration details live in `.claude/skills/add-stack-component/references/` (one file per category) if you want to read them yourself before asking.
 
 ## Philosophy — how the stack was chosen
 
@@ -55,6 +75,3 @@ Every tool in this stack was selected against the same set of principles, in pri
 
 5. **No mandatory SaaS / hosted APIs.** Nothing forces a monthly bill or a third-party account. The two unavoidable paid dependencies — **Stripe** (card processing) and email delivery — are inherent to their job and clearly flagged; email can be swapped for self-hosted SMTP.
 
-### The result
-
-A stack you fully own: **app + Postgres** covers the core, everything is permissively licensed and free, and each added capability was weighed for whether it earns its dependency. Heavier or hosted alternatives are noted in STACK.md for the cases where you genuinely outgrow the lightweight default.
