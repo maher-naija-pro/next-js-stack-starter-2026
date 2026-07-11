@@ -1,8 +1,14 @@
 # next-js-stack-starter-2026
 
-![Mandatory Core Stack — Next.js, React, TypeScript, Tailwind, shadcn/ui, PostgreSQL, Prisma, Better Auth, TanStack Query, Zustand, nuqs, XState Store, Zod, React Hook Form, Vitest, Playwright, MSW, Faker, Biome, Docker](./docs/stack.png)
+<a href="https://next-js-stack-starter-2026.vercel.app/">
+  <img src="./docs/hero.png" alt="Next.js Stack Starter 2026 — the Next.js stack that ships, not the one that gambles" />
+</a>
+
+**🔗 Live demo → [next-js-stack-starter-2026.vercel.app](https://next-js-stack-starter-2026.vercel.app/)**
 
 A ready-to-build Next.js starter, not just a boilerplate: the core tools you need for a real app — framework, database, auth, forms, testing, Docker — come pre-installed and already wired together, so you can start on features immediately instead of gluing tools together first.
+
+![Mandatory Core Stack — Next.js, React, TypeScript, Tailwind, shadcn/ui, PostgreSQL, Prisma, Better Auth, TanStack Query, Zustand, nuqs, XState Store, Zod, React Hook Form, Vitest, Playwright, MSW, Faker, Biome, Docker](./docs/stack.png)
 
 Every tool was deliberately chosen, not just defaulted to — see [STACK.md](./STACK.md) for the full list and the reasoning behind each pick.
 
