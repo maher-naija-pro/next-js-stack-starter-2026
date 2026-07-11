@@ -1,0 +1,45 @@
+# Keeps the build context small and prevents `COPY . .` in the Dockerfile from
+# clobbering the deps stage's freshly-installed node_modules with the host's
+# (possibly wrong-platform or stale) copy, and from leaking secrets into an
+# image layer.
+
+# Dependencies — reinstalled inside the image, never copied from the host.
+node_modules
+
+# Build output — regenerated inside the image; stale host output would be
+# copied over the freshly-built one otherwise.
+.next
+.next/standalone
+
+# Env files — NEVER send real secrets into the build context. Runtime env
+# vars are injected via `docker run -e` / compose `environment:`, not baked
+# into the image.
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+
+# Editor/OS cruft
+.vscode
+.idea
+.DS_Store
+
+# Test artifacts — not needed to build or run the production image.
+coverage
+playwright-report
+test-results
+e2e
+
+# Claude Code project files — dev-time only, no runtime relevance.
+.claude
+
+# Docs — not needed at runtime; keeps the layer that follows `COPY . .` lean.
+*.md
+!README.md
+
+# Docker files themselves — no need to send them into their own build context.
+Dockerfile
+docker-compose*.yml

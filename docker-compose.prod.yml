@@ -1,0 +1,50 @@
+# Production overrides — never used alone, layer on top of the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+services:
+  postgres:
+    restart: always
+    # Also restarts after a Docker daemon/host reboot, unlike dev's "unless-stopped".
+    environment:
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in production}'
+      # `:?message` fails the deploy loudly instead of running with the dev default password.
+    ports: !reset []
+    # Removes the base file's port mapping — the DB must never be reachable outside the Docker network.
+    security_opt:
+      - no-new-privileges:true
+      # Blocks any process from gaining more privileges than it started with.
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+          # Applied directly by `docker compose up` (Compose v2) — no Swarm needed. Tune to your instance.
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+        # Caps total log storage at ~30MB; the default json-file driver otherwise grows unbounded.
+
+  app:
+    restart: always
+    environment:
+      BETTER_AUTH_SECRET: '${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET must be set in production, e.g. via openssl rand -base64 32}'
+      BETTER_AUTH_URL: '${BETTER_AUTH_URL:?BETTER_AUTH_URL must be set to your real public URL in production}'
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    # Combined with the non-root `nextjs` user (Dockerfile), a compromised dependency can't persist changes.
+    tmpfs:
+      - /tmp
+      # Next.js still needs a writable /tmp at runtime; an in-memory mount satisfies that under read_only.
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'

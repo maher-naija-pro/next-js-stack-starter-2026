@@ -1,20 +1,29 @@
+# Base compose file for LOCAL DEVELOPMENT. For production, layer docker-compose.prod.yml on top (see its header and the README) rather than editing this file.
+
 services:
   postgres:
     image: postgres:18.4-alpine
+    # Pinned minor version, not `:latest`, so `docker compose pull` never silently jumps a major version.
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      # Dev-only credential; docker-compose.prod.yml requires a real secret instead.
       POSTGRES_DB: app
     ports:
       - '5434:5432'
+      # Non-default host port to avoid clashing with other local Postgres instances; removed entirely in prod.
     volumes:
       - postgres_data:/var/lib/postgresql
+      # PG18's image expects the volume at /var/lib/postgresql, not .../data as in PG17 and earlier.
+    shm_size: 256mb
+    # Docker's default 64MB /dev/shm is too small for real queries/sorts; bump it to avoid resize errors.
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
       timeout: 5s
       retries: 5
+      # Backs `depends_on: condition: service_healthy` below so `app` doesn't race Postgres's startup.
 
   app:
     build:
@@ -23,14 +32,19 @@ services:
     restart: unless-stopped
     ports:
       - '5002:3000'
+      # Host port 5002 (this project's convention) → container port 3000 (see Dockerfile).
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app?schema=public
+      # `postgres` is the service name, resolved via Docker's internal DNS — not localhost or the host port.
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-dev-secret-change-in-production}
+      # Dev-only fallback; docker-compose.prod.yml makes this mandatory instead of silently insecure.
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:5002}
       NODE_ENV: production
+      # Reflects that the image always contains a production build — not a claim this file is prod-hardened.
     depends_on:
       postgres:
         condition: service_healthy
+        # Waits for the healthcheck to pass, not just for the container to start.
 
 volumes:
   postgres_data:

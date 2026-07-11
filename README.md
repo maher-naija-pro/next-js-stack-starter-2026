@@ -37,6 +37,20 @@ To run the whole thing in Docker (app + Postgres):
 docker compose up -d
 ```
 
+### Production deployment
+
+`docker-compose.yml` is dev-friendly by default (exposed DB port, fallback secrets). For a real deployment, layer `docker-compose.prod.yml` on top — it requires real secrets (fails loudly if unset), removes the DB's host port, adds resource limits, log rotation, and container hardening (read-only root FS, no-new-privileges):
+
+```bash
+export POSTGRES_PASSWORD=$(openssl rand -base64 24)
+export BETTER_AUTH_SECRET=$(openssl rand -base64 32)
+export BETTER_AUTH_URL=https://your-real-domain.com
+
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+The app exposes `/api/health` (checked by the Dockerfile's `HEALTHCHECK` and useful for a load balancer/orchestrator) — it pings the DB, not just process liveness.
+
 ## Adding optional components
 
 Everything in STACK.md's **Optional Additions** — Dev & Ops Tooling, Platform Services, UI & App Libraries — is added on demand via the `add-stack-component` Claude Code skill (`.claude/skills/add-stack-component/`), not pre-installed.
