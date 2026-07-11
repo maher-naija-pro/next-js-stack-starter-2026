@@ -1,8 +1,13 @@
 # next-js-stack-starter-2026
 
-An opinionated, production-ready Next.js starter stack for 2026. See [STACK.md](./STACK.md) for the full pick-by-pick breakdown.
+A ready-to-build Next.js starter, not just a boilerplate: the core tools you need for a real app — framework, database, auth, forms, testing, Docker — come pre-installed and already wired together, so you can start on features immediately instead of gluing tools together first.
 
-Only the **Mandatory Core Stack** from STACK.md is installed here. Everything under **Optional Additions** is added on demand — see [Adding optional components](#adding-optional-components) below.
+Every tool was deliberately chosen, not just defaulted to — see [STACK.md](./STACK.md) for the full list and the reasoning behind each pick.
+
+**How it's organized:**
+
+- ✅ **Mandatory Core Stack** — installed and working right now (see `pnpm dev` below).
+- ➕ **Optional Additions** — payments, email, search, AI, charts, and 30+ more, documented in STACK.md but *not* installed. Add only what your project actually needs, on demand — see [Adding optional components](#adding-optional-components).
 
 ## Getting started
 
