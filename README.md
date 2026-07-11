@@ -2,6 +2,45 @@
 
 An opinionated, production-ready Next.js starter stack for 2026. See [STACK.md](./STACK.md) for the full pick-by-pick breakdown.
 
+Only the **Mandatory Core Stack** from STACK.md is installed here. Everything under **Optional Additions** is added on demand — see [Adding optional components](#adding-optional-components) below.
+
+## Getting started
+
+```bash
+pnpm install
+
+# Start local Postgres (18)
+docker compose up -d postgres
+
+cp .env.example .env   # adjust if you changed the Postgres port/credentials
+
+pnpm db:migrate         # applies prisma/migrations
+pnpm db:seed            # seeds a demo user
+
+pnpm dev                # http://localhost:5002
+```
+
+Other useful scripts:
+
+```bash
+pnpm lint          # Biome check
+pnpm lint:fix       # Biome check --write
+pnpm test           # Vitest unit tests
+pnpm test:e2e        # Playwright e2e tests (starts its own dev server)
+pnpm build           # production build (Next.js standalone output)
+pnpm db:studio        # Prisma Studio
+```
+
+To run the whole thing in Docker (app + Postgres):
+
+```bash
+docker compose up -d
+```
+
+## Adding optional components
+
+Ask Claude Code to install and wire up anything from STACK.md's **Optional Additions** section — Dev & Ops Tooling, Platform Services, or UI & App Libraries — using the `add-stack-component` skill (see `.claude/skills/`). It will ask which components you want, install them, and integrate the minimal working code.
+
 ## Philosophy — how the stack was chosen
 
 Every tool in this stack was selected against the same set of principles, in priority order:
