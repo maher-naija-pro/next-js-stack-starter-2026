@@ -1,12 +1,44 @@
 # next-js-stack-starter-2026
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![CI](https://github.com/maher-naija-pro/next-js-stack-starter-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/maher-naija-pro/next-js-stack-starter-2026/actions/workflows/ci.yml)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![GitHub stars](https://img.shields.io/github/stars/maher-naija-pro/next-js-stack-starter-2026?style=social)](https://github.com/maher-naija-pro/next-js-stack-starter-2026)
+
+> **The Next.js starter built for AI coding agents — type "Add Stripe" in Claude Code and it's installed, wired, and verified.**
+
+<!-- TODO: replace with a <30s GIF of `Add Stripe to this project` running end-to-end in Claude Code (record → convert → drop in ./docs/demo.gif) -->
 <a href="https://next-js-stack-starter-2026.vercel.app/">
   <img src="./docs/hero.png" alt="Next.js Stack Starter 2026 — the Next.js stack that ships, not the one that gambles" />
 </a>
 
-**🔗 Live demo → [next-js-stack-starter-2026.vercel.app](https://next-js-stack-starter-2026.vercel.app/)**
+## Why this exists
 
-A ready-to-build Next.js starter, not just a boilerplate: the core tools you need for a real app — framework, database, auth, forms, testing, Docker — come pre-installed and already wired together, so you can start on features immediately instead of gluing tools together first.
+Every tool was chosen against the same five filters, in priority order:
+
+1. **Compatible with the latest Next.js & its ecosystem** — App Router, React Server Components, Server Actions. No legacy choices bolted on.
+2. **Open source & permissively licensed** — MIT / Apache-2.0 / BSD only. No BSL, SSPL, or "open-core with a paywall" traps.
+3. **Fewer extra dependencies** — reuse what's already in the stack over adding new moving parts (Postgres does jobs *and* search, not Redis/Elastic).
+4. **No external services** where avoidable — the minimal production footprint is just **the Next.js app + PostgreSQL**.
+5. **No mandatory SaaS / hosted APIs** — nothing forces a monthly bill except the two truly unavoidable ones: **Stripe** and email delivery (swappable for self-hosted SMTP).
+
+On top of that, this starter is built to be built *with* AI, and to ship AI features:
+
+- **Agent-friendly codebase.** Strict TypeScript, Zod schemas, and generated Prisma types give AI coding agents (like Claude Code) a tight, type-checked feedback loop. Biome lints in milliseconds and conventions stay consistent, so generated code fits the existing patterns instead of fighting them.
+- **Extensible by asking.** The `add-stack-component` Claude Code skill installs and wires optional pieces on demand, following the repo's own conventions — see [Adding optional components](#adding-optional-components).
+- **AI features are first-class.** The **Vercel AI SDK** (streaming, tool calls, structured output) and **pgvector** for embeddings + hybrid RAG search are in the Optional Additions — build chat, semantic search, and agents on the Postgres you already run. ⚠️ AI features always need a model provider: a hosted API (Anthropic/OpenAI, billed per token) or a self-hosted Ollama.
+
+## Stack
+
+| Layer | Tools |
+|---|---|
+| Framework | Next.js (App Router, RSC), React, TypeScript (strict) |
+| Styling / UI | Tailwind CSS, shadcn/ui |
+| Database / ORM | PostgreSQL, Prisma |
+| Auth | Better Auth |
+| Data & state | TanStack Query, Zustand, nuqs, XState Store, Zod, React Hook Form |
+| Testing | Vitest, Playwright, MSW, Faker |
+| Tooling | Biome, Docker |
 
 ![Mandatory Core Stack — Next.js, React, TypeScript, Tailwind, shadcn/ui, PostgreSQL, Prisma, Better Auth, TanStack Query, Zustand, nuqs, XState Store, Zod, React Hook Form, Vitest, Playwright, MSW, Faker, Biome, Docker](./docs/stack.png)
 
@@ -16,14 +48,6 @@ Every tool was deliberately chosen, not just defaulted to — see [STACK.md](./S
 
 - ✅ **Mandatory Core Stack** — installed and working right now (see `pnpm dev` below).
 - ➕ **Optional Additions** — payments, email, search, AI, charts, and 30+ more, documented in STACK.md but *not* installed. Add only what your project actually needs, on demand — see [Adding optional components](#adding-optional-components).
-
-## AI-optimized
-
-This starter is built to be built *with* AI — and to ship AI features:
-
-- **Agent-friendly codebase.** Strict TypeScript, Zod schemas, and generated Prisma types give AI coding agents (like Claude Code) a tight, type-checked feedback loop. Biome lints in milliseconds and conventions stay consistent, so generated code fits the existing patterns instead of fighting them.
-- **Extensible by asking.** The `add-stack-component` Claude Code skill installs and wires optional pieces on demand, following the repo's own conventions — see [Adding optional components](#adding-optional-components).
-- **AI features are first-class.** The **Vercel AI SDK** (streaming, tool calls, structured output) and **pgvector** for embeddings + hybrid RAG search are in the Optional Additions — build chat, semantic search, and agents on the Postgres you already run. ⚠️ AI features always need a model provider: a hosted API (Anthropic/OpenAI, billed per token) or a self-hosted Ollama.
 
 ## Getting started
 
@@ -96,17 +120,7 @@ If you don't name specific components, it asks which category and which items in
 
 The skill never substitutes a different tool than what STACK.md specifies — if it thinks something better exists now, it'll ask rather than silently swap it in. Per-component install/integration details live in `.claude/skills/add-stack-component/references/` (one file per category) if you want to read them yourself before asking.
 
-## Philosophy — how the stack was chosen
+See [STACK.md](./STACK.md) for the full list of 30+ optional integrations and the reasoning behind each pick.
 
-Every tool in this stack was selected against the same set of principles, in priority order:
-
-1. **Compatible with the latest Next.js & its ecosystem.** Each pick is a current default for the newest Next.js (App Router, React Server Components, Server Actions) — not a legacy choice bolted on. Tools that fight the framework were rejected in favour of ones built for it.
-
-2. **Open source & permissively licensed.** MIT / Apache-2.0 / BSD only. No BSL, SSPL, or "open-core with a paywall" traps. You can read, fork, and self-host everything, forever, at no cost.
-
-3. **Fewer extra dependencies.** Prefer tools that reuse what's already in the stack over ones that add new moving parts. Examples: **pg-boss** (jobs) and **Better Auth** run on your existing Postgres; outbound webhooks reuse pg-boss; search stays in Postgres (FTS + `pg_trgm`). Less surface area = fewer upgrades, fewer CVEs, less to break.
-
-4. **No external services.** Wherever possible a need is met by an in-app library or your existing Postgres — not a separate server to deploy and operate. The minimal production footprint is just **the Next.js app + PostgreSQL**. Realtime (SSE + Postgres `LISTEN/NOTIFY`), notifications, and webhooks were all chosen to avoid extra infrastructure like Redis or MongoDB.
-
-5. **No mandatory SaaS / hosted APIs.** Nothing forces a monthly bill or a third-party account. The two unavoidable paid dependencies — **Stripe** (card processing) and email delivery — are inherent to their job and clearly flagged; email can be swapped for self-hosted SMTP.
+**🔗 Live demo → [next-js-stack-starter-2026.vercel.app](https://next-js-stack-starter-2026.vercel.app/)**
 
